@@ -32,7 +32,7 @@ jobs:
     - name: Install kubectl
       run: sudo apt-get install -y kubectl
 
-    - name: Create ns grafana
+    - name: Create ns vault
       run: kubectl create ns vault
 
     - name: Install Helm
