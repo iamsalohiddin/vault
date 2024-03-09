@@ -1,5 +1,5 @@
 expose:
-  type: loadBalancer
+  type: LoadBalancer
   ports:
     httpPort: 80
   tls:
