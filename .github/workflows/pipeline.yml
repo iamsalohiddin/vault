@@ -27,7 +27,7 @@ jobs:
         aws-region: us-east-1
 
     - name: Update kubeconfig
-      run: aws eks update-kubeconfig --region us-east-1 --name education-eks-WjoMYouB
+      run: aws eks update-kubeconfig --region us-east-1 --name education-eks-p6ybgTZn
 
     - name: Install kubectl
       run: sudo apt-get install -y kubectl
