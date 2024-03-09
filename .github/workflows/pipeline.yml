@@ -1,4 +1,4 @@
-name: Grafana Deploy
+name: Vault Deploy
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  grafana:
+  vault:
     runs-on: ubuntu-latest
 
     steps:
