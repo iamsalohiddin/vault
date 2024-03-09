@@ -1,4 +1,4 @@
-name: Deploy Vault
+name: Grafana Deploy
 
 on:
   push:
@@ -9,16 +9,13 @@ on:
       - main
 
 jobs:
-  terraform:
+  grafana:
     runs-on: ubuntu-latest
-
-      # Replace with your desired Terraform version something
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-
-
+      
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -28,20 +25,35 @@ jobs:
 
     - name: Update kubeconfig
       run: aws eks update-kubeconfig --region us-east-1 --name education-eks-p6ybgTZn
+      
+    - name: Install Kubectl
+      run: |
+        curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+        sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
-    - name: Install kubectl
-      run: sudo apt-get install -y kubectl
-
-    - name: Create ns vault
-      run: kubectl create ns vault
+    # - name: Create Namespace
+    #   run: kubectl create ns test
 
     - name: Install Helm
       run: |
         curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
         chmod +x get_helm.sh
         ./get_helm.sh
+    
+    - name: Clone Vault
+      uses: GuillaumeFalourd/clone-github-repo-action@v2.3
+      with:
+        depth: 1
+        branch: 'main'
+        owner: 'iamsalohiddin'
+        repository: 'vault'
+    
+    - name: Access cloned repo
+      run: |
+         cd vault
+         ls -la
 
     - name: Deploy Helm Chart
       run: |
-         helm repo add hashicorp https://helm.releases.hashicorp.com
-         helm install my-vault hashicorp/vault --version 0.27.0 --namespace vault
+        helm repo add hashicorp https://helm.releases.hashicorp.com
+        helm upgrade my-vault hashicorp/vault -f values.yaml -f values-dev.yaml -n vault
